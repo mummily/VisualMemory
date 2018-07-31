@@ -1125,15 +1125,7 @@ DWORD WINAPI waitEndThread(LPVOID lp)
                 LeaveCriticalSection(&g_cs);
                 ::Sleep(500);
                 EnterCriticalSection(&g_cs);
-                // test hook tcmalloc
-                //TCMalloc_InvokeNewHook = (InvokeNewHook_Func)DetourFindFunction("libtcmalloc_minimal.dll","tc_malloc");
-                //TCMalloc_InvokeNewHook = (InvokeNewHook_Func)DetourFindFunction("libtcmalloc_minimal.dll","?InvokeNewHook@MallocHook@@SAXPBXI@Z");
-                //DetourAttach(&(PVOID&)TCMalloc_InvokeNewHook, MyInvokeNewHook);
 
-                //TCMalloc_tcmalloc = (tcmalloc_Func)DetourFindFunction("libtcmalloc_minimal.dll","_tcmalloc");
-                //DetourAttach(&(PVOID&)TCMalloc_tcmalloc, MyTcmalloc);
-
-                //new char[1234];
                 for (int i = 0; i<gnVec; i++)
                 {
                     if (gArrBlock[i].nThreadId != -1)
@@ -1874,14 +1866,6 @@ BOOL APIENTRY DllMain(HANDLE hModule, DWORD ul_reason_for_call, LPVOID lpReserve
             DetourTransactionBegin();
             DetourUpdateThread(GetCurrentThread());
 
-            //这里可以连续多次调用DetourAttach，表明HOOK多个函数
-            // HeapAlloc
-            //SystemNTHeapAlloc = (HeapAlloc_Func)DetourFindFunction("ntdll.dll","RtlAllocateHeap");
-            //DetourAttach(&(PVOID&)SystemNTHeapAlloc,MyNTHeapAlloc);
-
-            //SystemNTHeapReAlloc = (HeapReAlloc_Func)DetourFindFunction("ntdll.dll","RtlReAllocateHeap");
-            //DetourAttach(&(PVOID&)SystemNTHeapReAlloc,MyNTHeapReAlloc);
-
             SystemHeapAlloc = (HeapAlloc_Func)DetourFindFunction("Kernel32.dll","HeapAlloc");
             DetourAttach(&(PVOID&)SystemHeapAlloc,MyHeapAlloc);
 
@@ -1927,63 +1911,6 @@ BOOL APIENTRY DllMain(HANDLE hModule, DWORD ul_reason_for_call, LPVOID lpReserve
 
             SystemLocalFree = (LocalFree_Func)DetourFindFunction("Kernel32.dll","LocalFree");
             DetourAttach(&(PVOID&)SystemLocalFree,MyLocalFree);
-
-            
-            //SystemMallocFunc = (Malloc_Func)DetourFindFunction("msvcr90","malloc");
-            //DetourAttach(&(PVOID&)SystemMallocFunc,MyHookMalloc);
-            //SystemMallocFunc = (Malloc_Func)DetourFindFunction("msvcr120","malloc");
-            //DetourAttach(&(PVOID&)SystemMallocFunc,MyHookMalloc);
-            //SystemMallocFunc100 = (Malloc_Func)DetourFindFunction("msvcr100","malloc");
-            //if (SystemMallocFunc100)
-            //DetourAttach(&(PVOID&)SystemMallocFunc100,MyHookMalloc100);
-            //SystemMallocFunc = (Malloc_Func)DetourFindFunction("msvcrt","malloc");
-            //if (SystemMallocFunc)
-            //    DetourAttach(&(PVOID&)SystemMallocFunc,MyHookMalloc);
-
-            //SystemReallocFunc = (Realloc_Func)DetourFindFunction("msvcrt","realloc");
-            //DetourAttach(&(PVOID&)SystemReallocFunc,MyHookRealloc);
-            //SystemReallocFunc = (Realloc_Func)DetourFindFunction("msvcr90","realloc");
-            //DetourAttach(&(PVOID&)SystemReallocFunc,MyHookRealloc);
-            //SystemReallocFunc = (Realloc_Func)DetourFindFunction("msvcr120","realloc");
-            //DetourAttach(&(PVOID&)SystemReallocFunc,MyHookRealloc);
-            //SystemReallocFunc = (Realloc_Func)DetourFindFunction("msvcr100","realloc");
-            //DetourAttach(&(PVOID&)SystemReallocFunc,MyHookRealloc);
-
-            //SystemCallocFunc = (Calloc_Func)DetourFindFunction("msvcrt","calloc");
-            //DetourAttach(&(PVOID&)SystemCallocFunc,MyHookCalloc);
-            //SystemCallocFunc = (Calloc_Func)DetourFindFunction("msvcr90","calloc");
-            //DetourAttach(&(PVOID&)SystemCallocFunc,MyHookCalloc);
-            //SystemCallocFunc = (Calloc_Func)DetourFindFunction("msvcr120","calloc");
-            //DetourAttach(&(PVOID&)SystemCallocFunc,MyHookCalloc);
-            //SystemCallocFunc = (Calloc_Func)DetourFindFunction("msvcr100","calloc");
-            //DetourAttach(&(PVOID&)SystemCallocFunc,MyHookCalloc);
-
-            //SystemReCallocFunc = (ReCalloc_Func)DetourFindFunction("msvcrt","_recalloc"); //_recalloc?
-            //DetourAttach(&(PVOID&)SystemReCallocFunc,MyHookReCalloc);
-            //SystemReCallocFunc = (ReCalloc_Func)DetourFindFunction("msvcr90","_recalloc"); //_recalloc?
-            //DetourAttach(&(PVOID&)SystemReCallocFunc,MyHookReCalloc);
-            //SystemReCallocFunc = (ReCalloc_Func)DetourFindFunction("msvcr120","_recalloc"); //_recalloc?
-            //DetourAttach(&(PVOID&)SystemReCallocFunc,MyHookReCalloc);
-            //SystemReCallocFunc = (ReCalloc_Func)DetourFindFunction("msvcr100","_recalloc"); //_recalloc?
-            //DetourAttach(&(PVOID&)SystemReCallocFunc,MyHookReCalloc);
-
-
-            //SystemFreeFunc = (Free_Func)DetourFindFunction("msvcrt","free");
-            //DetourAttach(&(PVOID&)SystemFreeFunc,MyHookFree);
-            //SystemFreeFunc = (Free_Func)DetourFindFunction("msvcr90","free");
-            //DetourAttach(&(PVOID&)SystemFreeFunc,MyHookFree);
-            //SystemFreeFunc = (Free_Func)DetourFindFunction("msvcr120","free");
-            //DetourAttach(&(PVOID&)SystemFreeFunc,MyHookFree);
-            //SystemFreeFunc = (Free_Func)DetourFindFunction("msvcr100","free");
-            //DetourAttach(&(PVOID&)SystemFreeFunc,MyHookFree);
-
-
-            //// test hook tcmalloc
-            //TCMalloc_InvokeNewHook = (InvokeNewHook_Func)DetourFindFunction("libtcmalloc_minimal.dll","?InvokeNewHook@MallocHook@@SAXPBXI@Z");
-            //DetourAttach(&(PVOID&)TCMalloc_InvokeNewHook, MyInvokeNewHook);
-
-            //TCMalloc_tcmalloc = (tcmalloc_Func)DetourFindFunction("libtcmalloc_minimal.dll","_tcmalloc");
-            //DetourAttach(&(PVOID&)TCMalloc_tcmalloc, MyTcmalloc);
 
             DetourTransactionCommit();
 
