@@ -919,7 +919,7 @@ QString Utils::getInfoFromAddress(int address)
             initModulesInfo();
         }
         static auto s_lastModuleIt = s_modules.begin() + 1;
-        if ((DWORD)address >= s_lastModuleIt.key())
+        if (s_modules.end() != s_lastModuleIt && (DWORD)address >= s_lastModuleIt.key())
         {
             SymUnloadModule64(process, (DWORD64)(s_lastModuleIt - 1).key());
             ++s_lastModuleIt;
